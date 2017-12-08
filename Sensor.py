@@ -1,6 +1,14 @@
 # Heart Sensor
 import socket
+import time
 import random
+import sys
+import hashlib
+from Crypto.PublicKey import RSA
+
+time.sleep(0.1)
+key = RSA.generate(1024)
+publickey2send = key.publickey()
 
 # Creating a TCP connection with the personal server(PS)
 s = socket.socket()
@@ -11,20 +19,117 @@ port = 40122
 num1 = 'HEART :: Systole value: ' + str(random.randint(1,101))
 num2 = 'HEART :: Distole value: ' + str(random.randint(109,700))
 num3 = 'HEART :: Beats per min: ' + str(random.randint(60,71))
+bye = "BYE"
 
 #Connecting with the PS
 s.connect((host,port))
 
-#sending and receiving 
-s.send(num1)
-msg = s.recv(50)
-print msg
-s.send(num2)
-msg = s.recv(50)
-print msg
-s.send(num3)
-msg = s.recv(50)
-print msg
-s.send("BYE")
+# Key Exchange
+ServersPubkey = RSA.importKey(s.recv(2048))  
+print('Client :: Received the servers public key ')
+s.send(publickey2send.exportKey());
+time.sleep(2)
+print('Sending our public key !')
+time.sleep(1)
+print('Key exchange successful ! \n')
+
+# Authenticating Identity
+data = s.recv(1024)
+decrypted = key.decrypt(eval(data))
+print(decrypted)
+nonce = str(random.randint(0,10000))
+print('Nonce sent = ' + nonce)
+time.sleep(2)
+E_nonce = ServersPubkey.encrypt(nonce,int(len(nonce)))
+s.sendall(str(E_nonce))
+temp = s.recv(2017)
+R_nonce = key.decrypt(eval(temp))
+print('Nonce reveiced back  = ' + R_nonce)
+if str(R_nonce) == str(nonce) :
+        print('Authentication successful !!')
+
+else :
+        print('Authentication failed')
+        s.close()
+
+# num 1
+print('Message to be sent :: ')
+time.sleep(1)
+print(num1)
+md5_obj = hashlib.md5()
+md5_obj.update(num1)
+print('Generating Digest !')
+time.sleep(2)
+print(md5_obj.hexdigest())
+Tencypted = ServersPubkey.encrypt(num1,int(len(num1)))
+print('Encrypted message looks like this ::')
+time.sleep(2)
+print(str(Tencypted))
+print('\n')
+s.sendall(str(Tencypted))
+s.recv(16) #dummy recv
+s.send(md5_obj.hexdigest())
+time.sleep(1)
+print('Sending all data to Personal server')
+
+#num2
+print('Message to be sent :: ')
+time.sleep(1)
+print(num2)
+md5_obj = hashlib.md5()
+md5_obj.update(num2)
+print('Generating Digest !')
+time.sleep(2)
+print(md5_obj.hexdigest())
+Tencypted = ServersPubkey.encrypt(num2,int(len(num2)))
+print('Encrypted message looks like this ::')
+time.sleep(2)
+print(str(Tencypted))
+print('\n')
+s.sendall(str(Tencypted))
+s.recv(16) #dummy recv
+s.send(md5_obj.hexdigest())
+time.sleep(1)
+print('Sending all data to Personal server')
+
+# num 3
+print('Message to be sent :: ')
+time.sleep(1)
+print(num3)
+md5_obj = hashlib.md5()
+md5_obj.update(num3)
+print('Generating Digest !')
+time.sleep(2)
+print(md5_obj.hexdigest())
+Tencypted = ServersPubkey.encrypt(num3,int(len(num3)))
+print('Encrypted message looks like this ::')
+time.sleep(2)
+print(str(Tencypted))
+print('\n')
+s.sendall(str(Tencypted))
+s.recv(16) #dummy recv
+s.send(md5_obj.hexdigest())
+time.sleep(1)
+print('Sending all data to Personal server')
+
+# BYE message
+print('Message to be sent :: ')
+time.sleep(1)
+print(bye)
+md5_obj = hashlib.md5()
+md5_obj.update(bye)
+print('Generating Digest !')
+time.sleep(2)
+print(md5_obj.hexdigest())
+Tencypted = ServersPubkey.encrypt(bye,int(len(bye)))
+print('Encrypted message looks like this ::')
+time.sleep(2)
+print(str(Tencypted))
+print('\n')
+s.sendall(str(Tencypted))
+s.recv(16) #dummy recv
+s.send(md5_obj.hexdigest())
+time.sleep(1)
+print('Sending all data to Personal server')
 #closing connection
 s.close()
