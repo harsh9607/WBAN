@@ -51,7 +51,7 @@ and it will show you the version and other details.
    
 *3a) Download the project and unzip it* 
 
-*3b)Open 2 terminals , first one for the Server.py and second one for Client.py*
+*3b)Open 2 terminals , first one for the PServer.py and second one for Sensor.py*
 
 *3c)change the directory to where your have  unzipped the project in both the terminals*
  
