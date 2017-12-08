@@ -1,5 +1,5 @@
 # WBAN
-Wireless Body Area Network 
+Wireless Body Area Network Simulation via Network programming
 
 Institute : NITRR 
 
