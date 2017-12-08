@@ -1,0 +1,11 @@
+2017-12-08 23:57:29.038421
+2017-12-08 23:59:10.007932
+HEART :: Systole value: 23
+HEART :: Distole value: 131
+HEART :: Beats per min: 67
+BYE
+2017-12-09 00:02:08.795600
+HEART :: Systole value: 76
+HEART :: Distole value: 530
+HEART :: Beats per min: 60
+BYE
