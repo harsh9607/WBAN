@@ -1,3 +1,4 @@
+
 #  :: PERSONAL SERVER ::
 #  :: Communication type  :: INTRA SERVER
 #  :: Hashing algo used :  SHA256
@@ -10,6 +11,7 @@ import socket
 import thread
 import time  
 import datetime
+import random
 import sys
 import hashlib
 from Crypto.Hash import SHA256
@@ -21,7 +23,7 @@ time.sleep(0.1)
 def Main():
     s = socket.socket()
     host = socket.gethostname()
-    port = 40122
+    port = 40192
     s.bind((host,port))
     s.listen(10)
     print 'Sever up and running !!'
@@ -59,6 +61,24 @@ def myfun(c,addr):
     print('nonce received ->'+d_nonce)
     E_d_nonce = ClientsPubKey.encrypt(d_nonce,int(len(d_nonce)))
     c.sendall(str(E_d_nonce))
+
+    c.recv(10)#dummy
+    nonce2 = str(random.randint(0,10000))
+    print('Nonce sent = ' + nonce2)
+    E_nonce2 = ClientsPubKey.encrypt(nonce2,int(len(nonce2)))
+    c.sendall(str(E_nonce2))
+    temp2 = c.recv(2049)
+    R_nonce2 = key.decrypt(eval(temp2))
+    print('Nonce reveiced back  = ' + R_nonce2)
+    if str(R_nonce2) == str(nonce2) :
+        print('Authentication successful !!')
+
+    else :
+        print('Authentication failed')
+        c.close()
+    
+    
+    
     # ~~~  Authentication complete !!  ~~~
 
     # ~~~ Communication Begins now !! ~~~
