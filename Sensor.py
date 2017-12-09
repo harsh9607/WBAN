@@ -4,10 +4,11 @@ import time
 import random
 import sys
 import hashlib
+from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 
 time.sleep(0.1)
-key = RSA.generate(1024)
+key = RSA.generate(2048)
 publickey2send = key.publickey()
 
 # Creating a TCP connection with the personal server(PS)
@@ -56,11 +57,14 @@ else :
 print('Message to be sent :: ')
 time.sleep(1)
 print(num1)
-md5_obj = hashlib.md5()
-md5_obj.update(num1)
+
+
+h = SHA256.new()
+h.update(num1.encode('utf-8'))
+
 print('Generating Digest !')
 time.sleep(2)
-print(md5_obj.hexdigest())
+print(h.hexdigest())
 Tencypted = ServersPubkey.encrypt(num1,int(len(num1)))
 print('Encrypted message looks like this ::')
 time.sleep(2)
@@ -68,7 +72,7 @@ print(str(Tencypted))
 print('\n')
 s.sendall(str(Tencypted))
 s.recv(16) #dummy recv
-s.send(md5_obj.hexdigest())
+s.send(h.hexdigest())
 time.sleep(1)
 print('Sending all data to Personal server')
 
@@ -76,11 +80,15 @@ print('Sending all data to Personal server')
 print('Message to be sent :: ')
 time.sleep(1)
 print(num2)
-md5_obj = hashlib.md5()
-md5_obj.update(num2)
+
+
+
+h = SHA256.new()
+h.update(num2.encode('utf-8'))
+
 print('Generating Digest !')
 time.sleep(2)
-print(md5_obj.hexdigest())
+print(h.hexdigest())
 Tencypted = ServersPubkey.encrypt(num2,int(len(num2)))
 print('Encrypted message looks like this ::')
 time.sleep(2)
@@ -88,7 +96,7 @@ print(str(Tencypted))
 print('\n')
 s.sendall(str(Tencypted))
 s.recv(16) #dummy recv
-s.send(md5_obj.hexdigest())
+s.send(h.hexdigest())
 time.sleep(1)
 print('Sending all data to Personal server')
 
@@ -96,11 +104,15 @@ print('Sending all data to Personal server')
 print('Message to be sent :: ')
 time.sleep(1)
 print(num3)
-md5_obj = hashlib.md5()
-md5_obj.update(num3)
+
+
+h = SHA256.new()
+h.update(num3.encode('utf-8'))
+
+
 print('Generating Digest !')
 time.sleep(2)
-print(md5_obj.hexdigest())
+print(h.hexdigest())
 Tencypted = ServersPubkey.encrypt(num3,int(len(num3)))
 print('Encrypted message looks like this ::')
 time.sleep(2)
@@ -108,7 +120,7 @@ print(str(Tencypted))
 print('\n')
 s.sendall(str(Tencypted))
 s.recv(16) #dummy recv
-s.send(md5_obj.hexdigest())
+s.send(h.hexdigest())
 time.sleep(1)
 print('Sending all data to Personal server')
 
@@ -116,11 +128,16 @@ print('Sending all data to Personal server')
 print('Message to be sent :: ')
 time.sleep(1)
 print(bye)
-md5_obj = hashlib.md5()
-md5_obj.update(bye)
+
+
+
+h = SHA256.new()
+h.update(bye.encode('utf-8'))
+
+
 print('Generating Digest !')
 time.sleep(2)
-print(md5_obj.hexdigest())
+print(h.hexdigest())
 Tencypted = ServersPubkey.encrypt(bye,int(len(bye)))
 print('Encrypted message looks like this ::')
 time.sleep(2)
@@ -128,8 +145,8 @@ print(str(Tencypted))
 print('\n')
 s.sendall(str(Tencypted))
 s.recv(16) #dummy recv
-s.send(md5_obj.hexdigest())
+s.send(h.hexdigest())
 time.sleep(1)
-print('Sending all data to Personal server')
+print('Sent all data to Personal server')
 #closing connection
 s.close()
